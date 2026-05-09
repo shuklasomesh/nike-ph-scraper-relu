@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nike PH Products — Relu Challenge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ───── design tokens ───── */
+    :root {
+      --bg:       #0a0a0a;
+      --surface:  #141414;
+      --surface2: #1c1c1c;
+      --border:   #272727;
+      --text:     #f0f0f0;
+      --muted:    #888;
+      --orange:   #fa5400;
+      --orange2:  #ff7a3d;
+      --glow:     rgba(250,84,0,.25);
+      --green:    #22c55e;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ───── header ───── */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(10,10,10,.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .75rem 2rem; gap: 1rem;
+    }
+    .logo { display: flex; align-items: center; gap: .55rem; }
+    .logo svg { width: 36px; height: 36px; flex-shrink: 0; }
+    .logo h1 { font-size: 1.2rem; font-weight: 900; letter-spacing: -.5px; }
+    .logo h1 span.brand {
+      background: linear-gradient(90deg,var(--orange),var(--orange2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo h1 span.sub { color: var(--muted); font-weight: 400; }
+    .badge {
+      font-size: .7rem; font-weight: 600; letter-spacing: .5px;
+      color: var(--muted); background: var(--surface2);
+      border: 1px solid var(--border); padding: .3rem .75rem; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .badge em { color: var(--orange); font-style: normal; }
+
+    /* ───── stats strip ───── */
+    .stats {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.1rem 2rem;
+    }
+    .stats-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; gap: 1rem;
+    }
+    .stat {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: .75rem 1.25rem;
+      transition: border-color .2s;
+    }
+    .stat:hover { border-color: var(--orange); }
+    .stat .lbl { font-size: .65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: .2rem; }
+    .stat .val { font-size: 1.4rem; font-weight: 800; }
+    .stat .val.hi { color: var(--orange); }
+
+    /* ───── toolbar (search + filter) ───── */
+    .toolbar {
+      max-width: 1400px; margin: 1.25rem auto;
+      padding: 0 2rem;
+      display: flex; gap: .75rem; align-items: center; flex-wrap: wrap;
+    }
+    .search-wrap {
+      display: flex; flex: 1 1 280px;
+      border: 1px solid var(--border); border-radius: 10px;
+      overflow: hidden; background: var(--surface);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .search-wrap:focus-within {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px var(--glow);
+    }
+    .search-wrap input {
+      flex: 1; padding: .65rem 1rem;
+      background: transparent; border: none; outline: none;
+      color: var(--text); font-size: .9rem; font-family: inherit;
+    }
+    .search-wrap input::placeholder { color: var(--muted); }
+    .search-wrap button {
+      padding: .65rem 1.2rem;
+      background: linear-gradient(135deg,var(--orange),var(--orange2));
+      border: none; color: #fff; font-weight: 700; font-size: .85rem;
+      cursor: pointer; font-family: inherit; transition: opacity .15s;
+    }
+    .search-wrap button:hover { opacity: .85; }
+    .clear-btn {
+      padding: .65rem 1rem;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); font-size: .85rem; border-radius: 10px;
+      text-decoration: none; font-family: inherit; cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .clear-btn:hover { border-color: var(--orange); color: var(--text); }
+
+    /* ───── meta row ───── */
+    .meta {
+      max-width: 1400px; margin: 0 auto .6rem;
+      padding: 0 2rem;
+      font-size: .78rem; color: var(--muted);
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .meta strong { color: var(--text); }
+
+    /* ───── table ───── */
+    .table-wrap {
+      max-width: 1400px; margin: 0 auto 1.5rem;
+      padding: 0 2rem;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%; border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      font-size: .8rem;
+    }
+    thead tr {
+      background: var(--surface2);
+      border-bottom: 2px solid var(--border);
+    }
+    thead th {
+      padding: .75rem .9rem; text-align: left;
+      font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .8px;
+      color: var(--muted); white-space: nowrap;
+    }
+    thead th:first-child { border-radius: 14px 0 0 0; }
+    thead th:last-child  { border-radius: 0 14px 0 0; }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .12s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(250,84,0,.04); }
+    td { padding: .65rem .9rem; vertical-align: middle; }
+
+    /* ── col: image ── */
+    td.col-img { width: 60px; }
+    td.col-img img {
+      width: 54px; height: 54px; object-fit: contain;
+      background: #1e1e1e; border-radius: 8px;
+      display: block;
+    }
+    /* ── col: name / tag ── */
+    .prod-name a { color: var(--text); text-decoration: none; font-weight: 600; font-size: .82rem; }
+    .prod-name a:hover { color: var(--orange); }
+    .prod-tag {
+      display: inline-block; margin-top: 3px;
+      background: linear-gradient(90deg,var(--orange),var(--orange2));
+      color: #fff; font-size: .6rem; font-weight: 700;
+      padding: 1px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .prod-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+    /* ── col: price ── */
+    .price-now {
+      font-weight: 800; font-size: .9rem;
+      background: linear-gradient(90deg,var(--orange),var(--orange2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .price-orig {
+      font-size: .7rem; color: var(--muted);
+      text-decoration: line-through; display: block;
+    }
+    /* ── col: rating ── */
+    .rating { display: flex; align-items: center; gap: 4px; }
+    .star { color: #fbbf24; font-size: .85rem; }
+    .rev { color: var(--muted); font-size: .7rem; }
+    /* ── col: style ── */
+    .chip {
+      display: inline-block;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); font-size: .65rem; padding: 2px 7px;
+      border-radius: 5px; white-space: nowrap;
+    }
+    /* ── col: sizes ── */
+    .sizes { max-width: 160px; color: var(--muted); font-size: .7rem; line-height: 1.5; }
+    /* ── col: link ── */
+    .view-btn {
+      display: inline-block; padding: .35rem .8rem;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); font-size: .72rem; border-radius: 7px;
+      text-decoration: none; white-space: nowrap;
+      transition: border-color .15s, color .15s;
+    }
+    .view-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* ───── pagination ───── */
+    .pagination {
+      max-width: 1400px; margin: .5rem auto 3rem;
+      padding: 0 2rem;
+      display: flex; justify-content: center; align-items: center; gap: .35rem;
+    }
+    .pagination a, .pagination .dots {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 36px; height: 36px; padding: 0 .6rem;
+      border: 1px solid var(--border); border-radius: 8px;
+      text-decoration: none; font-size: .82rem; font-weight: 500;
+      color: var(--muted); background: var(--surface);
+      transition: border-color .15s, color .15s;
+    }
+    .pagination .dots { border: none; background: none; cursor: default; }
+    .pagination a:hover { border-color: var(--orange); color: var(--text); }
+    .pagination a.active {
+      background: linear-gradient(135deg,var(--orange),var(--orange2));
+      border-color: transparent; color: #fff; font-weight: 700;
+      box-shadow: 0 0 14px var(--glow);
+    }
+
+    /* ───── empty state ───── */
+    .empty { text-align: center; padding: 4rem 2rem; color: var(--muted); }
+    .empty h2 { font-size: 1.3rem; color: var(--text); margin-bottom: .4rem; }
+
+    /* ───── footer ───── */
+    footer {
+      text-align: center; padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: .72rem; color: var(--muted);
+    }
+    footer a { color: var(--orange); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      header { padding: .6rem 1rem; }
+      .stats, .toolbar, .meta, .table-wrap, .pagination { padding-left: 1rem; padding-right: 1rem; }
+      .badge { display: none; }
+      td.col-sizes, th.col-sizes,
+      td.col-colors, th.col-colors,
+      td.col-desc, th.col-desc { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 36 36" fill="none">
+      <circle cx="18" cy="18" r="17" stroke="url(#lg)" stroke-width="1.5"/>
+      <path d="M10 22c1.3-4.5 4.5-11 12.5-12.5-2.5 2.5-6 6.5-7 10l5.5-4.5c-1.8 4.5-5.5 9-11 7z"
+            fill="url(#lg)"/>
+      <defs>
+        <linearGradient id="lg" x1="0" y1="0" x2="36" y2="36">
+          <stop stop-color="#fa5400"/><stop offset="1" stop-color="#ff7a3d"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <h1><span class="brand">NIKE PH</span> <span class="sub">Products</span></h1>
+  </div>
+  <div class="badge">Data Extraction · <em>Relu Challenge</em></div>
+</header>
+
+<!-- ═══ STATS STRIP ═══ -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat"><div class="lbl">Total Products</div><div class="val hi">{{ total }}</div></div>
+    <div class="stat"><div class="lbl">Page</div><div class="val">{{ page }}<span style="font-size:.75rem;color:var(--muted)"> / {{ total_pages }}</span></div></div>
+    <div class="stat"><div class="lbl">Per Page</div><div class="val">{{ products|length }}</div></div>
+    {% if search %}
+    <div class="stat"><div class="lbl">Filtered By</div><div class="val" style="font-size:.95rem">{{ search }}</div></div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ═══ TOOLBAR ═══ -->
+<div class="toolbar">
+  <form method="get" action="/" class="search-wrap">
+    <input type="text" name="q" value="{{ search }}" placeholder="Search product name…" autocomplete="off"/>
+    <button type="submit">Search</button>
+  </form>
+  {% if search %}
+  <a href="/" class="clear-btn">✕ Clear</a>
+  {% endif %}
+</div>
+
+<!-- meta row -->
+<div class="meta">
+  {% if search %}
+    Results for <strong>"{{ search }}"</strong> —
+  {% endif %}
+  Showing <strong>{{ (page-1)*20 + 1 }}–{{ (page-1)*20 + products|length }}</strong>
+  of <strong>{{ total }}</strong> products
+</div>
+
+<!-- ═══ TABLE ═══ -->
+<div class="table-wrap">
+  {% if products %}
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px">Image</th>
+        <th>Product Name / Tag</th>
+        <th>Style Code</th>
+        <th>Color Shown</th>
+        <th>Original Price</th>
+        <th>Discount Price</th>
+        <th>Rating</th>
+        <th>Reviews</th>
+        <th class="col-colors">Colors</th>
+        <th class="col-sizes">Sizes</th>
+        <th>Link</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in products %}
+      {% set url  = p.Product_URL or p.product_url or '#' %}
+      {% set img  = p.Product_Image_URL or p.product_image_url or '' %}
+      {% set name = p.Product_Name or p.product_name or 'Untitled' %}
+      {% set tag  = p.Product_Tagging or p.product_tagging or '' %}
+      {% set op   = p.Original_Price or p.original_price or '' %}
+      {% set dp   = p.Discount_Price or p.discount_price or '' %}
+      {% set rs   = p.Rating_Score or p.rating_score or '' %}
+      {% set rc   = p.Review_Count or p.review_count or '' %}
+      {% set sc   = p.Style_Code or p.style_code or '' %}
+      {% set clr  = p.Color_Shown or p.color_shown or '' %}
+      {% set ac   = p.Available_Colors or p.available_colors or '' %}
+      {% set sz   = p.Sizes_Available or p.sizes_available or '' %}
+      <tr>
+        <!-- image -->
+        <td class="col-img">
+          <a href="{{ url }}" target="_blank" rel="noopener">
+            <img src="{{ img }}" alt="{{ name }}" loading="lazy"/>
+          </a>
+        </td>
+        <!-- name + tag -->
+        <td class="prod-name" style="min-width:200px;max-width:260px">
+          <a href="{{ url }}" target="_blank" rel="noopener">{{ name }}</a>
+          {% if tag %}<div><span class="prod-tag">{{ tag }}</span></div>{% endif %}
+        </td>
+        <!-- style code -->
+        <td><span class="chip">{{ sc or '—' }}</span></td>
+        <!-- color shown -->
+        <td style="min-width:130px;color:var(--muted);font-size:.75rem">{{ clr or '—' }}</td>
+        <!-- original price -->
+        <td style="white-space:nowrap">
+          {% if op %}₱{{ op }}{% else %}—{% endif %}
+        </td>
+        <!-- discount price -->
+        <td style="white-space:nowrap">
+          {% if dp %}<span class="price-now">₱{{ dp }}</span>{% else %}—{% endif %}
+        </td>
+        <!-- rating -->
+        <td>
+          {% if rs %}
+          <div class="rating"><span class="star">★</span> {{ rs }}</div>
+          {% else %}—{% endif %}
+        </td>
+        <!-- reviews -->
+        <td class="rev">{{ rc or '—' }}</td>
+        <!-- colors -->
+        <td class="col-colors">{{ ac or '—' }}</td>
+        <!-- sizes -->
+        <td class="col-sizes">
+          <div class="sizes">{{ sz or '—' }}</div>
+        </td>
+        <!-- link -->
+        <td>
+          <a class="view-btn" href="{{ url }}" target="_blank" rel="noopener">View ↗</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <h2>No products found</h2>
+    <p>Try a different search or check back when the scraper has finished.</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- ═══ PAGINATION ═══ -->
+{% if total_pages > 1 %}
+<div class="pagination">
+  {% if page > 1 %}
+    <a href="?page={{ page-1 }}{% if search %}&q={{ search }}{% endif %}">‹</a>
+  {% endif %}
+
+  {% for pg in range(1, total_pages + 1) %}
+    {% if pg == page %}
+      <a class="active" href="?page={{ pg }}{% if search %}&q={{ search }}{% endif %}">{{ pg }}</a>
+    {% elif (pg - page)|abs <= 2 or pg == 1 or pg == total_pages %}
+      <a href="?page={{ pg }}{% if search %}&q={{ search }}{% endif %}">{{ pg }}</a>
+    {% elif (pg - page)|abs == 3 %}
+      <span class="dots">…</span>
+    {% endif %}
+  {% endfor %}
+
+  {% if page < total_pages %}
+    <a href="?page={{ page+1 }}{% if search %}&q={{ search }}{% endif %}">›</a>
+  {% endif %}
+</div>
+{% endif %}
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  Built for <a href="https://reluconsultancy.com" target="_blank" rel="noopener">Relu Consultancy</a>
+  Hiring Challenge &nbsp;·&nbsp; Nike PH Data Extraction &nbsp;·&nbsp;
+  Powered by <a href="https://fastapi.tiangolo.com" target="_blank">FastAPI</a>
+</footer>
+
+</body>
+</html>
