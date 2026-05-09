@@ -233,11 +233,17 @@
 
     /* ───── footer ───── */
     footer {
-      text-align: center; padding: 1.5rem;
+      text-align: center; padding: 2rem 1rem;
       border-top: 1px solid var(--border);
-      font-size: .72rem; color: var(--muted);
+      font-size: .75rem; color: var(--muted);
+      line-height: 1.8;
     }
     footer a { color: var(--orange); text-decoration: none; }
+    footer a:hover { color: var(--orange2); text-decoration: underline; }
+    .footer-dev { font-size: .85rem; font-weight: 600; color: var(--text); margin-bottom: .35rem; }
+    .footer-dev span { color: var(--orange); }
+    .footer-links { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; justify-content: center; margin-top: .4rem; }
+    .footer-sep { color: var(--border); }
 
     @media (max-width: 768px) {
       header { padding: .6rem 1rem; }
@@ -413,9 +419,21 @@
 
 <!-- ═══ FOOTER ═══ -->
 <footer>
-  Built for <a href="https://reluconsultancy.com" target="_blank" rel="noopener">Relu Consultancy</a>
-  Hiring Challenge &nbsp;·&nbsp; Nike PH Data Extraction &nbsp;·&nbsp;
-  Powered by <a href="https://fastapi.tiangolo.com" target="_blank">FastAPI</a>
+  <div class="footer-dev">Developed by <span>Somesh Shukla</span></div>
+  <div class="footer-links">
+    <a href="mailto:someshshukla263@gmail.com">✉ someshshukla263@gmail.com</a>
+    <span class="footer-sep">|</span>
+    <a href="tel:+919179682083">📞 9179682083</a>
+    <span class="footer-sep">|</span>
+    <a href="https://shikshasync.in" target="_blank" rel="noopener">🌐 shikshasync.in</a>
+    <span class="footer-sep">|</span>
+    <a href="https://dharmsetu.org.in" target="_blank" rel="noopener">🌐 dharmsetu.org.in</a>
+  </div>
+  <div style="margin-top:.6rem;">
+    Built for <a href="https://reluconsultancy.com" target="_blank" rel="noopener">Relu Consultancy</a>
+    Hiring Challenge &nbsp;·&nbsp; Nike PH Data Extraction &nbsp;·&nbsp;
+    Powered by <a href="https://fastapi.tiangolo.com" target="_blank">FastAPI</a>
+  </div>
 </footer>
 
 </body>
